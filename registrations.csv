@@ -1,0 +1,67 @@
+<?php
+// Anta at du har konfigurert FTP-forbindelsesdetaljer
+$ftp_host = 'DinFTPserver.com'; // eller IP
+$ftp_username = 'FTPBrukernavn';
+$ftp_password = 'FTPPassord';
+
+// Opprett en FTP-forbindelse
+$conn_id = ftp_connect($ftp_host) or die("Kunne ikke koble til $ftp_host");
+
+// Logg inn på FTP
+if (@ftp_login($conn_id, $ftp_username, $ftp_password)) {
+    echo "Koblet til $ftp_host som $ftp_username\n";
+} else {
+    echo "Kunne ikke logge inn på $ftp_host\n";
+}
+
+// Filbane på FTP-serveren
+$file = 'registrations.csv';
+
+// Hente eksisterende data hvis filen eksisterer
+if (ftp_size($conn_id, $file) > 0) {
+    // Midlertidig filbane
+    $temp_handle = fopen('php://temp', 'r+');
+    
+    // Last ned filen til temp
+    if (ftp_fget($conn_id, $temp_handle, $file, FTP_ASCII, 0)) {
+        echo "Fil hentet og lagret i temp\n";
+    } else {
+        echo "Det var et problem\n";
+    }
+    
+    // Les filen
+    $existing_data = [];
+    rewind($temp_handle);
+    while (($row = fgetcsv($temp_handle)) !== FALSE) {
+        $existing_data[] = $row;
+    }
+    fclose($temp_handle);
+} else {
+    $existing_data = [];
+}
+
+// Legg til ny brukerdata
+array_push($existing_data, [$_POST['name'], $_POST['email'], $_POST['ign']]);
+
+// Åpne en fil i skrivemodus
+$temp_handle = fopen('php://temp', 'w');
+foreach ($existing_data as $fields) {
+    fputcsv($temp_handle, $fields);
+}
+
+// Gå til starten av temp-filen
+rewind($temp_handle);
+
+// Last opp temp-filen til FTP
+if (ftp_fput($conn_id, $file, $temp_handle, FTP_ASCII)) {
+    echo "Suksessfullt lastet opp $file\n";
+} else {
+    echo "Det var et problem ved opplasting av $file\n";
+}
+
+// Lukk temp-filen
+fclose($temp_handle);
+
+// Lukk FTP-forbindelsen
+ftp_close($conn_id);
+?>
