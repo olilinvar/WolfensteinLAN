@@ -30,7 +30,7 @@ if (isset($_POST['navn']) && isset($_POST['spillernavn'])) {
 //|||||| Sjekker login detaljer med databasen ||||||||
 //||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-    $sql = "INSERT INTO table1 (navn, GamerTag) VALUES ('$navn', '$spillernavn')";
+    $sql = "INSERT INTO brukere (navn, GamerTag) VALUES ('$navn', '$spillernavn')";
 
     $result = mysqli_query($conn, $sql);
 

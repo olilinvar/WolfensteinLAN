@@ -22,7 +22,7 @@ include "login.php";
         <h1>Registrerte brukere</h1>
         <?php
         // vis alle registrerte brukere i table 1
-        $sql = "SELECT * FROM table1";
+        $sql = "SELECT * FROM brukere";
         $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
