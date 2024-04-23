@@ -1,10 +1,9 @@
 <?php
-// Anta at du har konfigurert FTP-forbindelsesdetaljer
-$ftp_host = 'DinFTPserver.com'; // eller IP
-$ftp_username = 'FTPBrukernavn';
-$ftp_password = 'FTPPassord';
 
-// Opprett en FTP-forbindelse
+$ftp_host = '10.2.2.7';
+$ftp_username = 'ftpuser';
+$ftp_password = 'password';
+
 $conn_id = ftp_connect($ftp_host) or die("Kunne ikke koble til $ftp_host");
 
 // Logg inn på FTP
