@@ -1,0 +1,144 @@
+In the case of messed up PHP docs, here is list of the main, first version of the Oliver's original codes:
+
+.............
+db_connect.php
+________________________________
+
+<?php
+$server = "localhost";
+$user = "root";
+$pw = "root";
+$db = "wolf";
+
+$conn = mysqli_connect($server, $user, $pw, $db);
+
+if (!$conn) {
+    echo "Connection failed!";
+}
+
+
+..........
+index.php
+______________________________
+
+<?php
+include "login.php";
+?>
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+    </head>
+
+    <body>   
+        <div>
+            <h1>Bruker registrering</h1>
+            <form action="login.php" method="post">
+                <h2>Register:</h2>
+                <label>navn: </label>
+                <input type="text" name="navn" placeholder="Username"><br />
+                <label>spillernavn: </label>
+                <input type="text" name="spillernavn" placeholder="spillernavn"><br />
+                <button type="submit">register</button><br />
+            </form>
+        </div>
+        <h1>Registrerte brukere</h1>
+        <?php
+        // vis alle registrerte brukere i table 1
+        $sql = "SELECT * FROM brukere";
+        $result = mysqli_query($conn, $sql);
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "navn: " . $row['navn'] . " | spillernavn: " . $row['GamerTag'] . "<br>";
+            }
+        }
+        ?>
+    </body>
+
+    </html>
+    <!-- -------->
+<?php
+?>
+
+
+..........
+register.php
+_________________________
+
+<?php
+// register.php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Antar at du vil bruke PDO for databasetilkobling i fremtiden
+    // For øyeblikket bare en placeholder for databasetilkobling
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $ign = $_POST['ign'];
+
+    // Her ville du ha kode for å koble til databasen og lagre dataene
+    // For eksempel:
+    // $pdo = new PDO('mysql:host=din_host;dbname=din_databasenavn', 'brukernavn', 'passord');
+    // $stmt = $pdo->prepare('INSERT INTO registrations (name, email, ign) VALUES (?, ?, ?)');
+    // $stmt->execute([$name, $email, $ign]);
+    
+    // Midlertidig omdirigering til bekreftelsessiden
+    header('Location: confirmation.php');
+    exit();
+}
+?>
+
+
+.............
+login.php
+____________________________
+
+<?php
+session_start();
+include "db_connect.php";
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||| Henter og validerer data fra index.php ||||||||
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||
+if (isset($_POST['navn']) && isset($_POST['spillernavn'])) {
+
+    function validate($data)
+    {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+
+
+    $navn = validate($_POST['navn']);
+    $spillernavn = validate($_POST['spillernavn']);
+
+    if (empty($navn)) {
+        header("Location: index.php?error=navn is required!");
+        exit();
+    } else if (empty($spillernavn)) {
+        header("Location: index.php?error=spillernavn is required!");
+        exit();
+    }
+
+//||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||| Sjekker login detaljer med databasen ||||||||
+//||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+    $sql = "INSERT INTO brukere (navn, GamerTag) VALUES ('$navn', '$spillernavn')";
+
+    $result = mysqli_query($conn, $sql);
+
+    if ($result) {
+        header("Location: index.php?success=Your account has been created successfully");
+        exit();
+    } else {
+        header("Location: index.php?error=Unknown error occurred&$user_data");
+        exit();
+    }
+}
+
+
+
+
+
+
+
