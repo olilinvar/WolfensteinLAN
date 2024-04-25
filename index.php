@@ -1,18 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Wolfenstein LAN Party Registration</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-<body>
-  <div class="container mt-5">
-    <h1>Welcome to the Wolfenstein LAN Party Registration</h1>
-    <p>Join us for an exciting night of gaming!</p>
-    <a href="signup.php" class="btn btn-primary">Sign Up Now</a>
-  </div>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-</html>
+<?php
+include "login.php";
+?>
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+    </head>
+
+    <body>   
+        <div>
+            <h1>Bruker registrering</h1>
+            <form action="login.php" method="post">
+                <h2>Register:</h2>
+                <label>navn: </label>
+                <input type="text" name="navn" placeholder="Username"><br />
+                <label>spillernavn: </label>
+                <input type="text" name="spillernavn" placeholder="spillernavn"><br />
+                <button type="submit">register</button><br />
+            </form>
+        </div>
+        <h1>Registrerte brukere</h1>
+        <?php
+        // vis alle registrerte brukere i table 1
+        $sql = "SELECT * FROM brukere";
+        $result = mysqli_query($conn, $sql);
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "navn: " . $row['navn'] . " | spillernavn: " . $row['GamerTag'] . "<br>";
+            }
+        }
+        ?>
+    </body>
+
+    </html>
+    <!-- -------->
+<?php
+?>
