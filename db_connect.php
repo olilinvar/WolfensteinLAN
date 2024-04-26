@@ -1,7 +1,7 @@
 <?php
 $server = "localhost";
 $user = "root";
-$pw = "root";
+$pw = "";
 $db = "wolf";
 
 $conn = mysqli_connect($server, $user, $pw, $db);
