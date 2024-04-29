@@ -1,21 +1,44 @@
 <?php
-include "db_connect.php"; // Ensure this is the correct path to your database connection script
+session_start();
+include "db_connect.php";
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||| Henter og validerer data fra index.php ||||||||
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||
+if (isset($_POST['navn']) && isset($_POST['spillernavn'])) {
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = mysqli_real_escape_string($conn, $_POST['navn']);
-    $gamertag = mysqli_real_escape_string($conn, $_POST['spillernavn']);
+    function validate($data)
+    {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
 
-    // Insert query (replace table_name with your actual table name)
-    $sql = "INSERT INTO table_name (navn, GamerTag) VALUES ('$name', '$gamertag')";
 
-    if (mysqli_query($conn, $sql)) {
-        echo "New record created successfully";
+    $navn = validate($_POST['navn']);
+    $spillernavn = validate($_POST['spillernavn']);
+
+    if (empty($navn)) {
+        header("Location: index.php?error=navn is required!");
+        exit();
+    } else if (empty($spillernavn)) {
+        header("Location: index.php?error=spillernavn is required!");
+        exit();
+    }
+
+//||||||||||||||||||||||||||||||||||||||||||||||||||||
+//|||||| Sjekker login detaljer med databasen ||||||||
+//||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+    $sql = "INSERT INTO brukere (navn, GamerTag) VALUES ('$navn', '$spillernavn')";
+
+    $result = mysqli_query($conn, $sql);
+
+    if ($result) {
+        header("Location: index.php?success=Your account has been created successfully");
+        exit();
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        header("Location: index.php?error=Unknown error occurred&$user_data");
+        exit();
     }
 }
-mysqli_close($conn);
-// Redirect back to the index page
-header('Location: index.php');
-exit;
-?>
