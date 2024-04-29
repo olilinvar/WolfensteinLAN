@@ -138,7 +138,28 @@ if (isset($_POST['navn']) && isset($_POST['spillernavn'])) {
 
 
 
+________________________________________
+EDIT FOR db_connect.php
 
+
+
+
+
+<?php
+// Remote server details
+$server = "remote_server_ip_or_hostname"; // Replace with the actual server IP or hostname
+$user = "remote_username";                // Replace with the actual username
+$pw = "remote_password";                  // Replace with the actual password
+$db = "wolf";                            // The database name
+
+// Attempt to connect to the remote database server
+$conn = mysqli_connect($server, $user, $pw, $db);
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+?>
 
 
 
