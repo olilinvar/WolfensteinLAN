@@ -15,7 +15,7 @@ include "db_connect.php"; // Assuming this is the correct path to your database 
         <p>Join us for an exciting night of gaming!</p>
         
         <div class="mb-4">
-            <form action="register.php" method="post">
+            <form action="login.php" method="post">
                 <div class="form-group">
                     <label for="name">Navn:</label>
                     <input type="text" class="form-control" id="name" name="navn" placeholder="Full name" required>
