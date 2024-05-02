@@ -1,11 +1,18 @@
 <?php
-$server = "localhost";
-$user = "root";
-$pw = "";
-$db = "wolf";
+// Define database credentials
+$host = "localhost";
+$username = "root";  // Default username for XAMPP's MySQL
+$password = "";      // Default password for XAMPP's MySQL is empty
+$database = "wolf";  // Make sure this database exists in your MySQL server
 
-$conn = mysqli_connect($server, $user, $pw, $db);
+// Create a new database connection
+$link = new mysqli($host, $username, $password, $database);
 
-if (!$conn) {
-    echo "Connection failed!";
+// Check for connection errors
+if ($link->connect_error) {
+    die('Connect Error (' . $link->connect_errno . ') ' . $link->connect_error);
 }
+
+// Optionally, you can set the charset
+$link->set_charset("utf8mb4");
+?>
