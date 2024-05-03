@@ -10,6 +10,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 // You can add more session variables like username, email etc. after the user has logged in successfully
 $username = $_SESSION["username"] ?? 'Guest'; // Replace 'Guest' with appropriate default value
 
+
 if (isset($_GET['logout']) && $_GET['logout'] == '1') {
 
     $_SESSION = array(); 

@@ -2,6 +2,7 @@
 session_start();
 include "db_connect.php";
 
+// Redirect if already logged in
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     header("Location: ../bruker/welcome.php");
     exit;
@@ -10,6 +11,7 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
 $username = $password = "";
 $username_err = $password_err = $login_err = "";
 
+// Check for logout message
 if (!empty($_GET['logged_out']) && $_GET['logged_out'] == 'true') {
     $logout_message = "You have been successfully logged out.";
 }
@@ -77,11 +79,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="container">
         <div class="wrapper">
-            <h2>Login</h2>
-            <p>Please fill in your credentials to login.</p>
             <?php if (!empty($logout_message)) {
                 echo '<div class="alert alert-success">' . htmlspecialchars($logout_message) . '</div>';
             } ?>
+            <h2>Login</h2>
+            <p>Please fill in your credentials to login.</p>
             <?php if (!empty($login_err)) {
                 echo '<div class="alert alert-danger">' . htmlspecialchars($login_err) . '</div>';
             } ?>
@@ -98,6 +100,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Login">
+                    <a href="register.php" class="btn btn-secondary">Register</a>
+                    <a href="../index.php" class="btn btn-info">Return to Main Page</a>
                 </div>
             </form>
         </div>

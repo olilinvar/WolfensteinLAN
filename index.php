@@ -7,9 +7,7 @@ include "main_pages/db_connect.php";
 <head>
     <meta charset="UTF-8">
     <title>Wolfenstein LAN Party Registration</title>
-    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for this template -->
     <style>
         .login-register-buttons {
             display: flex;
@@ -23,11 +21,11 @@ include "main_pages/db_connect.php";
     </style>
 </head>
 <body>
+
     <div class="container mt-5 text-center">
         <h1>Wolfenstein LAN Party Registration</h1>
         <p>Join us for an exciting night of gaming!</p>
 
-        <!-- Buttons for Login and Registration -->
         <div class="login-register-buttons">
             <a href="main_pages/login.php" class="btn btn-success btn-custom">Login</a>
             <a href="main_pages/register.php" class="btn btn-primary btn-custom">Register</a>

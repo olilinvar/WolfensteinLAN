@@ -1,29 +1,27 @@
 <?php
 session_start();
 
-header("Cache-Control: no-cache, no-store, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0"); 
+require '../main_pages/db_connect.php'; // Make sure this path is correct
+
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("Location: login.php");
+    header("Location: ../main_pages/login.php");
     exit;
 }
 
-// Assuming $link is your database connection from a required 'db_connect.php'
-require '../main_pages/db_connect.php';
+$username = $_SESSION["username"] ?? 'Guest';
+$email = $_SESSION["email"] ?? 'No email provided'; 
+$gamertag = $_SESSION["gamertag"] ?? 'No gamertag'; 
+$gamerStatus = $_SESSION["gamerStatus"] ?? 'No status defined';
 
-$username = $_SESSION["username"];
-$email = $_SESSION["email"];
-$gamertag = $_SESSION["gamertag"];
-$gamerStatus = $_SESSION["status"] ?? 'No status'; // Placeholder for gamer status
-
-// Check if already signed up for the tournament
-$query = "SELECT * FROM tournament_registrations WHERE username = ?";
+// Fetch user's tournament registrations
+$query = "SELECT t.name, t.start_date, t.end_date FROM tournaments t 
+          JOIN tournament_registrations tr ON t.tournament_id = tr.tournament_id 
+          WHERE tr.username = ?";
 $stmt = mysqli_prepare($link, $query);
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
-mysqli_stmt_store_result($stmt);
-$isRegistered = mysqli_stmt_num_rows($stmt) > 0;
+$result = mysqli_stmt_get_result($stmt);
+$registeredTournaments = mysqli_fetch_all($result, MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
 ?>
 
@@ -37,7 +35,7 @@ mysqli_stmt_close($stmt);
 <body>
     <div class="container mt-5">
         <h1>Dashboard</h1>
-        <a href="logout.php" class="btn btn-danger">Logout</a>
+        <a href="../main_pages/logout.php" class="btn btn-danger">Logout</a>
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Profile Information</h5>
@@ -49,20 +47,17 @@ mysqli_stmt_close($stmt);
         </div>
         <div class="card mt-4">
             <div class="card-body">
-                <h5 class="card-title">Tournament Sign-up</h5>
-                <?php if (!$isRegistered): ?>
-                    <p class="card-text">You are not signed up for any tournaments.</p>
-                    <button class="btn btn-primary" onclick="document.getElementById('tournamentForm').style.display='block';">Sign Up for Tournament</button>
-                    <div id="tournamentForm" style="display:none;">
-                        <form action="signup_tournament.php" method="post">
-                            <input type="hidden" name="username" value="<?php echo $username; ?>">
-                            <input type="hidden" name="gamertag" value="<?php echo $gamertag; ?>">
-                            <input type="submit" class="btn btn-success" value="Confirm Sign Up">
-                        </form>
-                    </div>
+                <h5 class="card-title">Your Tournaments</h5>
+                <?php if (count($registeredTournaments) > 0): ?>
+                    <ul>
+                        <?php foreach ($registeredTournaments as $tournament): ?>
+                            <li><?php echo htmlspecialchars($tournament['name']) . " - " . $tournament['start_date'] . " to " . $tournament['end_date']; ?></li>
+                        <?php endforeach; ?>
+                    </ul>
                 <?php else: ?>
-                    <p class="card-text">You are already signed up for the tournament.</p>
+                    <p>You are not signed up for any tournaments.</p>
                 <?php endif; ?>
+                <a href="../admin/view_tournaments.php" class="btn btn-primary">View Available Tournaments</a>
             </div>
         </div>
     </div>
